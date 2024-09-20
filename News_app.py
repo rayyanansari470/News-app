@@ -1,6 +1,7 @@
 import tkinter as tk
 from tkinter import scrolledtext
-# from PIL import Image, ImageTk
+from tkinter import *
+from PIL import Image, ImageTk
 import requests
 # from bs4 import BeautifulSoup
 
@@ -87,12 +88,36 @@ root.configure(bg='#e0f7fa')
 root.title("News App")
 root.geometry('800x500')
 
-# image = Image.open('newspaper.png')
-# image = image.resize((200, 200), Image.Resampling.LANCZOS)
-# # Convert the image to a Tkinter-compatible format
-# tk_image = ImageTk.PhotoImage(image)
-# label = tk.Label(root, image=tk_image)
-# label.place(x=100, y=150)
+image = Image.open('newspaper.png')
+image = image.resize((200, 200), Image.Resampling.LANCZOS)
+image = image.convert("RGBA")
+
+# Get the data of the image (pixel by pixel)
+data = image.getdata()
+
+# Create a new image list to hold pixels
+new_data = []
+
+# Specify the background color to remove (e.g., white)
+bg_color = (255, 255, 255)  # White
+
+# Iterate through each pixel
+for item in data:
+    # Change all white (or near-white) pixels to transparent
+    if item[0] >= 240 and item[1] >= 240 and item[2] >= 240:  # Adjust the tolerance if needed
+        new_data.append((255, 255, 255, 0))  # Make the pixel transparent
+    else:
+        new_data.append(item)  # Keep the pixel unchanged
+
+# Update the image with the new data
+image.putdata(new_data)
+
+# Convert the image to a Tkinter-compatible format
+tk_image = ImageTk.PhotoImage(image)
+
+# Display the image
+label = Label(root, image=tk_image, bg='#e0f7fa')
+label.place(x=800, y=80)
 
 placeholder_text = "What type of news are you interested in?"
 
